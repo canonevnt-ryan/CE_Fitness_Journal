@@ -1,0 +1,317 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the FitFlow application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the user."
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "name"
+      ]
+    },
+    "Exercise": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Exercise",
+      "type": "object",
+      "description": "Represents a specific exercise, such as squats, bench press, etc.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the exercise (e.g., Squats, Bench Press)."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "strength",
+            "cardio"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
+    },
+    "WorkoutLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "WorkoutLog",
+      "type": "object",
+      "description": "Represents a log of a user's workout session.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Date of the workout session.",
+          "format": "date"
+        },
+        "timeOfDay": {
+          "type": "string",
+          "enum": [
+            "morning",
+            "day",
+            "night"
+          ]
+        },
+        "bodyWeight": {
+          "type": "number"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Any notes about the workout."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "traditional",
+            "metcon"
+          ]
+        },
+        "strength": {
+          "type": "array",
+          "items": {
+            "$ref": "#/entities/StrengthLog"
+          }
+        },
+        "cardio": {
+          "type": "array",
+          "items": {
+            "$ref": "#/entities/CardioLog"
+          }
+        },
+        "workoutName": {
+          "type": "string"
+        },
+        "score": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "time",
+                "rounds",
+                "reps"
+              ]
+            },
+            "value": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "required": [
+        "date",
+        "timeOfDay",
+        "type"
+      ]
+    },
+    "StrengthLog": {
+      "title": "StrengthLog",
+      "type": "object",
+      "properties": {
+        "exerciseName": {
+          "type": "string"
+        },
+        "equipment": {
+          "type": "string"
+        },
+        "sets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/entities/ExerciseSet"
+          }
+        }
+      },
+      "required": [
+        "exerciseName",
+        "sets"
+      ]
+    },
+    "CardioLog": {
+      "title": "CardioLog",
+      "type": "object",
+      "properties": {
+        "exerciseName": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "distance": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "exerciseName",
+        "duration"
+      ]
+    },
+    "ExerciseSet": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ExerciseSet",
+      "type": "object",
+      "description": "Represents a single set of an exercise within a workout log.",
+      "properties": {
+        "reps": {
+          "type": "number",
+          "description": "Number of repetitions performed in the set."
+        },
+        "weight": {
+          "type": "number",
+          "description": "Weight used for the set (in kilograms or pounds)."
+        },
+        "supersetLinkId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reps",
+        "weight"
+      ]
+    },
+    "Metcon": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Metcon",
+      "type": "object",
+      "description": "Represents a Metcon (Metabolic Conditioning) workout.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the Metcon workout (e.g., Fran, Murph)."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "For Time",
+            "AMRAP",
+            "EMOM",
+            "Other"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the Metcon workout."
+        },
+        "timeCap": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "description"
+      ]
+    },
+    "StripeCustomer": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "StripeCustomer",
+      "type": "object",
+      "description": "Represents a customer in Stripe, linked to a Firebase user.",
+      "properties": {
+        "stripeId": {
+          "type": "string",
+          "description": "The customer ID from Stripe (e.g., cus_ABC123)."
+        },
+        "stripeLink": {
+          "type": "string",
+          "description": "A direct link to the customer in the Stripe dashboard."
+        }
+      },
+      "required": [
+        "stripeId",
+        "stripeLink"
+      ]
+    },
+    "Subscription": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subscription",
+      "type": "object",
+      "description": "Represents a user's subscription status, managed by Stripe.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The status of the subscription (e.g., active, trialing, past_due, canceled).",
+          "enum": [
+            "active",
+            "trialing",
+            "past_due",
+            "canceled",
+            "unpaid"
+          ]
+        },
+        "stripeLink": {
+          "type": "string",
+          "description": "A direct link to the subscription in the Stripe dashboard."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role associated with this subscription (e.g., premium, basic)."
+        }
+      },
+      "required": [
+        "status"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": {
+      "/users/{userId}": {
+        "schema": {
+          "$ref": "#/entities/User"
+        },
+        "description": "Stores user profiles. Only the authenticated user can read/write their own profile."
+      },
+      "/users/{userId}/exercises/{exerciseId}": {
+        "schema": {
+          "$ref": "#/entities/Exercise"
+        },
+        "description": "Stores a catalog of available exercises for a specific user."
+      },
+      "/users/{userId}/workouts/{workoutId}": {
+        "schema": {
+          "$ref": "#/entities/WorkoutLog"
+        },
+        "description": "Stores workout logs for a specific user."
+      },
+      "/users/{userId}/metcons/{metconId}": {
+        "schema": {
+          "$ref": "#/entities/Metcon"
+        },
+        "description": "Stores a catalog of available Metcon workouts for a specific user."
+      },
+      "/users/{userId}/customers/{customerId}": {
+        "schema": {
+          "$ref": "#/entities/StripeCustomer"
+        },
+        "description": "Stores the Stripe customer information for a user. Created and managed by the Stripe Firebase Extension."
+      },
+      "/users/{userId}/subscriptions/{subscriptionId}": {
+        "schema": {
+          "$ref": "#/entities/Subscription"
+        },
+        "description": "Stores the subscription status for a user. Created and managed by the Stripe Firebase Extension."
+      }
+    }
+  }
+}
