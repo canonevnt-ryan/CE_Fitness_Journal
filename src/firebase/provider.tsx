@@ -6,6 +6,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
+import { UseUserResult } from './auth/use-user';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -148,6 +149,11 @@ export const useFirebaseApp = (): FirebaseApp => {
   return firebaseApp;
 };
 
+export function useUser(): UseUserResult {
+  const { user, isUserLoading } = useFirebase();
+  return { user, isUserLoading };
+}
+
 type MemoFirebase <T> = T & {__memo?: boolean};
 
 export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | (MemoFirebase<T>) {
@@ -158,4 +164,3 @@ export function useMemoFirebase<T>(factory: () => T, deps: DependencyList): T | 
   
   return memoized;
 }
-
